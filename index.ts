@@ -242,6 +242,7 @@ export default function apply(ctx: AtelyxCtx): void {
             h(
               "div",
               {
+                key: "thumb",
                 style: {
                   height: 80,
                   overflow: "hidden",
@@ -275,6 +276,7 @@ export default function apply(ctx: AtelyxCtx): void {
             h(
               "div",
               {
+                key: "meta",
                 style: {
                   display: "flex",
                   alignItems: "center",
@@ -284,7 +286,7 @@ export default function apply(ctx: AtelyxCtx): void {
                   color: "var(--text-muted)",
                 },
               },
-              [h("span", null, i + 1), h("span", null, props.durations[i] + "s")],
+              [h("span", { key: "idx" }, i + 1), h("span", { key: "dur" }, props.durations[i] + "s")],
             ),
           ],
         ),
@@ -314,8 +316,8 @@ export default function apply(ctx: AtelyxCtx): void {
             },
           },
           [
-            h("div", { style: { width: 1, height: 12, background: "var(--text-muted)", opacity: 0.5 } }),
-            h("span", { style: { fontSize: 9, marginTop: 2, color: "var(--text-muted)" } }, t + "s"),
+            h("div", { key: "tick", style: { width: 1, height: 12, background: "var(--text-muted)", opacity: 0.5 } }),
+            h("span", { key: "label", style: { fontSize: 9, marginTop: 2, color: "var(--text-muted)" } }, t + "s"),
           ],
         ),
       );
@@ -417,10 +419,8 @@ export default function apply(ctx: AtelyxCtx): void {
       h(
         "div",
         { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 8, maxWidth: "100%" } },
-        [
-          content,
-          h("div", { style: { fontSize: 12, color: "var(--text-muted)" } }, "行 " + (props.shotIndex + 1) + " · " + props.durationSec + " 秒"),
-        ],
+        content,
+        h("div", { style: { fontSize: 12, color: "var(--text-muted)" } }, "行 " + (props.shotIndex + 1) + " · " + props.durationSec + " 秒"),
       ),
     );
   });
@@ -586,6 +586,7 @@ export default function apply(ctx: AtelyxCtx): void {
       { style: { height: "100%", display: "flex", flexDirection: "column", background: "var(--bg-primary)" } },
       [
         h(TimelinePreview, {
+          key: "preview",
           currentRow,
           shotIndex,
           imageField,
@@ -597,6 +598,7 @@ export default function apply(ctx: AtelyxCtx): void {
         h(
           "div",
           {
+            key: "controls",
             style: {
               flexShrink: 0,
               display: "flex",
@@ -612,6 +614,7 @@ export default function apply(ctx: AtelyxCtx): void {
             h(
               "button",
               {
+                key: "play",
                 onClick: () => {
                   if (finished) {
                     playheadRef.current = 0;
@@ -640,6 +643,7 @@ export default function apply(ctx: AtelyxCtx): void {
             h(
               "button",
               {
+                key: "stop",
                 onClick: () => {
                   setPlaying(false);
                   playheadRef.current = 0;
@@ -661,21 +665,21 @@ export default function apply(ctx: AtelyxCtx): void {
               },
               h(StopIcon),
             ),
-            h("span", { style: { fontFamily: "monospace" } }, formatTime(playhead) + " / " + formatTime(totalDuration)),
+            h("span", { key: "time", style: { fontFamily: "monospace" } }, formatTime(playhead) + " / " + formatTime(totalDuration)),
           ],
         ),
         // 时间轴：刻度尺 + 卡片流 + 播放头
         h(
           "div",
-          { style: { flexShrink: 0, borderTop: "1px solid var(--border)", overflowX: "auto" } },
+          { key: "timeline", style: { flexShrink: 0, borderTop: "1px solid var(--border)", overflowX: "auto" } },
           h(
             "div",
             { style: { position: "relative", width: totalWidth + 24, padding: "0 12px 10px" } },
             [
-              durationField ? h(TimelineRuler, { totalDuration }) : null,
+              durationField ? h(TimelineRuler, { key: "ruler", totalDuration }) : null,
               h(
                 "div",
-                { ref: cardsRef, style: { display: "flex", alignItems: "stretch", gap: CARD_GAP } },
+                { key: "cards", ref: cardsRef, style: { display: "flex", alignItems: "stretch", gap: CARD_GAP } },
                 h(TimelineCards, {
                   rows,
                   selectedRowId,
@@ -688,7 +692,7 @@ export default function apply(ctx: AtelyxCtx): void {
                   onJump: jumpTo,
                 }),
               ),
-              h(PlayheadLine, { left: playheadPx, visible: playing }),
+              h(PlayheadLine, { key: "playhead", left: playheadPx, visible: playing }),
             ],
           ),
         ),
